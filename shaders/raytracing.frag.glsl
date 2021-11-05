@@ -72,12 +72,15 @@ Hit intersect(Ray r) {
     sphere(h, r, vec4(0.8, -1.0, -10.0, 1.0),
         Material(vec3(0.4, 0.2, 0.8), vec3(0.8), false, false));
     sphere(h, r, vec4(-2.5, -0.2, -12.0, 1.8),
-        Material(vec3(1.0, 0.4, 0.2), vec3(0.8), true, false));
+        Material(vec3(1.0, 0.4, 0.2), vec3(0.8), false, false));
     sphere(h, r, vec4(-3.5, -1.2, -6.0, 0.8),
         Material(vec3(0.2, 0.6, 0.3), vec3(0.8), false, false));
+    sphere(h, r, vec4(-1.0, -1.0, -1.0, 0.1),
+        Material(vec3(0.1, 0.2, 0.3), vec3(0.8), false, false));
     circle(h, r, -2.0, 50.0,
         Material(vec3(0.8, 0.8, 0.8), vec3(0.0), false, true));
     return h;
+    
 }
 
 // Compute lighting from one light
@@ -88,6 +91,11 @@ vec3 illuminate(vec3 lightPosition, vec3 pos, vec3 wo, Hit h) {
         // Checkerboard pattern for the floor
         vec2 coords = floor(pos.xz);
         kd = vec3(mod(coords.x + coords.y, 2.0) * 0.8 + 0.2);
+
+        Ray ray = Ray(pos, lightPosition);
+        if ((intersect(ray).time != inf)) {
+            return vec3(0.0);
+        }
     }
     float intensity = 1.0 / dot(wi, wi); // inverse-square law
     vec3 diffuse = kd * max(dot(normalize(wi), h.normal), 0.0);
@@ -104,7 +112,8 @@ vec3 illuminate(vec3 lightPosition, vec3 pos, vec3 wo, Hit h) {
 vec3 calcLighting(vec3 pos, vec3 wo, Hit h) {
     vec3 color = vec3(0.0);
     color += 100.0 * illuminate(vec3(-3.0, 10.0, 0.0), pos, wo, h);
-    color += 200000.0 * illuminate(vec3(0.0, 1000.0, 0.0), pos, wo, h);
+    color += 20000.0 * illuminate(vec3(0.0, 1000.0, 0.0), pos, wo, h);
+    color += 100.0 * illuminate(vec3(10.0, 10.0, 0.0), pos, wo, h);
     return color;
 }
 

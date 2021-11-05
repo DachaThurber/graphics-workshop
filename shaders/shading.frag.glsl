@@ -27,7 +27,12 @@ vec3 illuminate(vec3 lightPosition) {
     //    result is not negative!)
     //  - Multiply the result by specular coefficient ks.
 
-    vec3 specular = vec3(0.0); // Change me!
+    vec3 wo = normalize(eye - vPosition);
+    vec3 r = reflect(normalize(wi), normalize(vNormal));
+    float dot = pow(min(dot(wo, r), 0.0), shininess);
+    vec3 specularity = dot * ks;
+
+    vec3 specular = specularity; // Change me!
 
     return intensity * (diffuse + specular);
 }
